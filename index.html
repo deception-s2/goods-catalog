@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>캐릭터 굿즈 도감</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#fafafb; --surface:#ffffff; --ink:#23232b; --muted:#74747f; --line:#e7e7ec;
+  --accent:#e8407f; --accent-ink:#ffffff; --hi:#ffe9a8; --ok:#2e9b61;
+  --s1:#fdf0f5; --s2:#eff6fc; --s3:#f3f0fb; --s4:#eff8f2; --s5:#fdf6e6;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 48px}
+nav{display:flex;gap:16px;flex-wrap:wrap;font-weight:500;margin-bottom:18px}
+nav a{color:var(--ink);text-decoration:none;border-bottom:2px solid transparent}
+nav a:hover{border-color:var(--accent)}
+h1{font-family:"Jua","Noto Sans KR",sans-serif;font-weight:400;font-size:clamp(2rem,6vw,3.2rem);line-height:1.1;margin:0 0 6px}
+h1 mark{background:linear-gradient(transparent 55%,var(--hi) 55%);color:inherit;padding:0 .1em}
+h2{font-family:"Jua","Noto Sans KR",sans-serif;font-weight:400;font-size:1.5rem;margin:0 0 4px}
+.sub{margin:0 0 22px;color:var(--muted);max-width:56ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:20px}
+.head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.note{color:var(--muted);font-size:.85rem}
+.rail{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity}
+.mini{flex:0 0 150px;scroll-snap-align:start;text-decoration:none;color:inherit;border:2px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg)}
+.mini .t{aspect-ratio:1;display:grid;place-items:center;font-size:2.8rem;position:relative}
+.mini p{margin:0;padding:8px 10px;font-size:.85rem;font-weight:500}
+.badge{position:absolute;top:6px;left:6px;background:var(--accent);color:var(--accent-ink);font-size:.7rem;font-weight:700;border-radius:6px;padding:1px 7px}
+.badge.ltd{background:var(--hi);color:#4a1f3d;left:auto;right:6px}
+.bar{height:12px;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--bg);margin:8px 0 10px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.chip{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer}
+.chip small{color:var(--muted);margin-left:4px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.chip[aria-pressed="true"] small{color:var(--bg);opacity:.75}
+.chip:focus-visible,a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin-top:14px}
+.card{border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;background:var(--surface);box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.card.got{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok)}
+.card .t{aspect-ratio:4/3;display:grid;place-items:center;font-size:3.4rem;border-bottom:1px solid var(--line);position:relative}
+.card .b{padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px;flex:1}
+.cat{font-size:.76rem;color:var(--muted)}
+.ko{font-weight:700;margin:0;font-size:.98rem}
+.ja{margin:0;font-size:.76rem;color:var(--muted)}
+.acts{margin-top:auto;padding-top:10px;display:grid;gap:6px}
+.acts a,.acts button{font:inherit;font-weight:700;text-align:center;text-decoration:none;border-radius:10px;padding:7px 8px;cursor:pointer}
+.acts a{background:var(--accent);color:var(--accent-ink);border:2px solid var(--accent)}
+.acts button{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.card.got .acts button{background:var(--ok);border-color:var(--ok);color:#10261a}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:30px 0}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.cats a{display:block;text-decoration:none;color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--bg);font-weight:500}
+.cats a small{display:block;color:var(--muted);font-weight:400}
+.cats a:hover{border-color:var(--accent)}
+.chars{display:flex;flex-wrap:wrap;gap:14px}
+.chars a{display:grid;justify-items:center;gap:4px;text-decoration:none;color:var(--ink);font-size:.85rem;width:88px}
+.chars b{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-family:"Jua",sans-serif;font-weight:400;font-size:1.5rem;border:1px solid var(--line)}
+footer{color:var(--muted);font-size:.8rem;margin-top:8px}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .in{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;gap:10px;align-items:center}
+.brand{font-family:"Jua","Noto Sans KR",sans-serif;font-size:1.2rem;color:var(--ink);text-decoration:none;white-space:nowrap;margin-right:6px}
+#tabs{display:flex;gap:8px;align-items:center;flex:1;min-width:0;overflow-x:auto;padding:2px}
+.tab.me{flex:none;background:var(--hi);border-color:var(--hi);color:#23232b}
+.tab.me.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.tab{white-space:nowrap;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:4px 13px;font-weight:500}
+.tab.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab.add{color:var(--muted);border-style:dashed}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--surface);z-index:30}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.hc{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:2px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.hc h2{margin-top:10px}
+.av{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-family:"Jua",sans-serif;font-size:2rem;border:1px solid var(--line)}
+.top a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.how{margin:8px 0 0;padding-left:1.2em;color:var(--ink)}
+.how li{margin:4px 0}
+.intro p{margin:6px 0;max-width:60ch}
+.shops{display:grid;gap:10px;margin-bottom:14px}
+.shop{display:block;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg)}
+.shop:hover{border-color:var(--accent)}
+.shop b{margin-right:8px}
+.shop .tag{font-size:.75rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 9px;background:var(--surface)}
+.shop p{margin:6px 0 0;color:var(--muted);font-size:.9rem}
+
+.hero{display:flex;gap:16px;align-items:center}
+.av.big{width:84px;height:84px;font-size:2.4rem;flex:none}
+.hero .bar{margin:8px 0 4px}
+.rowline{display:grid;grid-template-columns:minmax(70px,120px) 1fr auto;gap:10px;align-items:center;margin:8px 0}
+.rowline .bar{margin:0}
+.rowline a{color:var(--ink);font-weight:700;text-decoration:none}
+.achs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-bottom:14px}
+.ach{display:flex;gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--bg)}
+.ach.on{border-color:var(--ok);background:var(--surface)}
+.ach .ico{font-size:1.7rem;line-height:1.2}
+.ach>div{flex:1}
+.ach p{margin:0;color:var(--muted);font-size:.85rem}
+.bar.sm{height:8px;margin:6px 0 2px}
+.where{font:inherit;font-size:.85rem;border:1px solid var(--line);border-radius:8px;padding:5px 8px;background:var(--surface);color:var(--ink);width:100%;margin-top:8px}
+textarea{width:100%;min-height:76px;font:inherit;font-size:.8rem;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--surface);color:var(--ink)}
+.where:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--surface);border-radius:14px;padding:12px 18px;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:40;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.toast,.bar i{transition:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in"><a class="brand" href="#home">굿즈 도감</a><div id="tabs"></div><a class="tab me" id="me" href="#mypage">🏅 마이페이지</a></div></header>
+<main class="wrap" id="main"></main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<datalist id="wh"></datalist>
+<script>
+const KB="https://www.kirby.jp/";
+const SW=["--s1","--s2","--s3","--s4","--s5"];
+const mk=r=>({id:String(r[0]),ko:r[1],ja:r[2],cat:r[3],emo:r[4],ltd:!!r[5],p:r[6]||"",u:r[7]||(KB+"goods_item/"+r[0]+"/")});
+const N=q=>"https://search.shopping.naver.com/search/all?query="+encodeURIComponent(q);
+const K=[
+[25760,"카비 카페 PETIT 시폰케이크 양말","カービィカフェ PETIT シフォンケーキソックス","카비 카페","🧦",1],
+[25759,"카비 카페 PETIT 쵸코리상","カービィカフェ PETIT ちょっこりさん","카비 카페","🍰",1],
+[25758,"카비 카페 PETIT 주머니 소프트 캐러멜","カービィカフェ PETIT 巾着入りソフトキャラメル","카비 카페","🍬",1],
+[25757,"카비 카페 PETIT 홍차 캔 피치티","カービィカフェ PETIT 紅茶缶 ピーチティー","카비 카페","🍑",1],
+[25756,"카비 카페 파오 파우치","カービィカフェ パオポーチ","카비 카페","👝",1],
+[25755,"카비 카페 폭신폭신 키홀더","カービィカフェ もこもこキーホルダー","카비 카페","🔑",1],
+[25754,"카비 카페 WINTER 장갑","カービィカフェ WINTER 手袋 ブラウン×ブルー","카비 카페","🧤",1],
+[25753,"카비 카페 WINTER 스톨 머플러","カービィカフェ WINTER ストールマフラー ブラウン×ブルー","카비 카페","🧣",1],
+[25738,"Lovisia 마스코트 캡 핸드크림","Lovisia 星のカービィ マスコットキャップ付きハンドクリーム","패션·잡화","🧴",0],
+[25747,"푹신 카비 태블릿 케이스","星のカービィ タブレットケース ぷくっとカービィ","패션·잡화","📱",0],
+[25746,"푹신 카비 스퀘어 백","星のカービィ スクエアバッグ ぷくっとカービィ","패션·잡화","👜",0],
+[25745,"푹신 카비 미니 백","星のカービィ ミニバッグ ぷくっとカービィ","패션·잡화","🎒",0],
+[25744,"푹신 카비 사코슈","星のカービィ サコッシュ ぷくっとカービィ","패션·잡화","🛍️",0],
+[25787,"도시락 컵","星のカービィ お弁当カップ","도시락·주방","🍱",0],
+[25766,"주먹밥 랩","星のカービィ おにぎりラップ","도시락·주방","🍙",0],
+[25765,"도시락 픽","星のカービィ ピックス","도시락·주방","🥢",0],
+[25764,"꾹 캐러밴 스크립","星のカービィ ぎゅっとキャラバンスクリップ","문구·종이공작","📎",0],
+[25752,"연하엽서 세트 2027 (스티커 포함)","星のカービィ 年賀はがきセット2027 おまけシールつき","문구·종이공작","✉️",1],
+[25749,"뿌꾹뿌꾹 페이퍼 시어터","星のカービィ ぷくぷくペーパーシアター","문구·종이공작","🎭",0],
+[25748,"페이퍼 시어터 프프프 36경 플로트 아일랜드","星のカービィ ペーパーシアター プププ三十六景 フロートアイランズ沖浪裏","문구·종이공작","🌊",0],
+[25763,"카비 프렌즈 6","カービィフレンズ6","장난감·취미","🧸",0],
+[25762,"프프프한 스타 숍","星のカービィ プププなスターショップ","장난감·취미","🏪",0],
+[25751,"캐릭터 다이스","星のカービィ キャラクターダイス","장난감·취미","🎲",0],
+[25750,"카비의 에어라이더 스타 릴리프 메달 컬렉션","カービィのエアライダー スターレリーフメダルコレクション","장난감·취미","🪙",0]
+];
+const CATS=[["인형·취미","ぬいぐるみ・ホビー","01"],["패션","ファッション","02"],["먹거리","たべもの","03"],["책·CD","本・CD","04"],["주방","キッチン","05"],["잡화","雑貨","06"],["문구","ステーショナリー","07"],["프라이즈·완구","プライズ・玩具","08"],["기타","その他","09"]];
+const CH=[["와도루디","sb001","와","--s2"],["메타나이트","sb002","메","--s3"],["데데데 대왕","sb003","데","--s5"],["마호로아","sb005","마","--s1"],["에피린","sb006","에","--s4"]];
+const A="https://animeanime.jp/article/2025/12/23/94675.html",B="https://premium.gamepedia.jp/hobby/?p=75935",M="https://news.livedoor.com/article/detail/31559626/",L="https://news.livedoor.com/article/detail/31560155/",T="https://news.livedoor.com/article/detail/31576966/";
+const SH="https://travel.watch.impress.co.jp/docs/news/2079317.html";
+const CI=[
+["c1","포켓 치이카와 소풍 마스코트 (7종)","ちいかわぽけっと ピクニックなマスコット(全7種)","마스코트·인형","🧸",0,"1,980엔",A],
+["c2","소풍 트레이딩 아크릴 스탠드 (7종)","ピクニックなトレーディングアクリルスタンド(全7種)","스탠드·키링","🧍",0,"495엔",B],
+["c3","소풍 클리어 파일","ピクニックなクリアファイル","문구·스티커","🗂️",0,"440엔",B],
+["c4","소풍 스마트폰 스티커","スマホに貼れるサイズのステッカー(ピクニックなみんな)","문구·스티커","🏷️",0,"330엔",B],
+["c5","영화 치이카와 마스코트 (인어섬의 비밀)","映画ちいかわ 人魚の島のひみつ マスコット","마스코트·인형","🧜",0,"",M],
+["c6","푹 앉은 시마지로 인형","どっしりおすわり島二郎ぬいぐるみ","마스코트·인형","🪆",0,"",L],
+["c7","인어섬 리조트 백","人魚の島のリゾートバッグ","패션·잡화","👜",0,"",L],
+["c8","흡수 보틀 타월","吸水ボトルタオル","패션·잡화","💧",0,"",L],
+["c9","스카이트리 콜라보 홀로그램 캔뱃지 (8종)","トレーディングホログラム缶バッジ(全8柄)","스탠드·키링","📍",1,"440엔",T],
+["c10","스카이트리 콜라보 비즈 아크릴 키홀더 (8종)","ビーズ付きアクリルキーホルダー(全8種)","스탠드·키링","🔑",1,"1,430엔",T],
+["c11","스카이트리 콜라보 대형 토트백","大きめトートバッグ","패션·잡화","🛍️",1,"2,970엔",T],
+["c12","스카이트리 콜라보 캔디 캔 (3종)","キャンディー缶(全3種)","식품","🍬",1,"880엔",T]
+];
+const SI=[
+["s1","시르크 드 카스카베 굿즈","シルクドカスカベ","시네마 퍼레이드","🎪",0,"","https://premium.gamepedia.jp/hobby/?p=140740"],
+["s2","신칸센 스고이 카타이 아이스 아크릴 키홀더 (랜덤 5종)","シンカンセンスゴイカタイアイス アクリルキーホルダー(ランダム全5種)","신칸센 아이스 콜라보","🔑",1,"770엔",SH],
+["s3","신칸센 스고이 카타이 아이스 티셔츠","シンカンセンスゴイカタイアイス Tシャツ","신칸센 아이스 콜라보","👕",1,"3,520엔",SH],
+["s4","신칸센 스고이 카타이 아이스 스푼","アイスクリームスプーン","신칸센 아이스 콜라보","🥄",1,"990엔",SH],
+["s5","신칸센 스고이 카타이 아이스 주머니","巾着","신칸센 아이스 콜라보","👝",1,"1,320엔",SH],
+["s6","신칸센 스고이 카타이 아이스 핸드타월","ハンドタオル","신칸센 아이스 콜라보","🧻",1,"880엔",SH],
+["s7","이치방쿠지 애니메이션 씬 셀렉션","一番くじ アニメシーンセレクションだゾ","이치방쿠지","🎰",0,"1회 790엔","https://www.famitsu.com/article/202602/66003"],
+["s8","이치방쿠지 극장판 vol.2 명작 시네마즈","一番くじ 劇場版クレヨンしんちゃん vol.2 名作シネマズ","이치방쿠지","🎬",0,"1회 780엔","https://www.toy-people.com/jp/?p=109204"],
+["s9","마루코 × 짱구 팝업숍 오키라쿠 상점 굿즈","ちびまる子ちゃん×クレヨンしんちゃん おきらく商店","팝업·콜라보","🏮",1,"","https://news.livedoor.com/pr_article/detail/31395238/"]
+];
+const NOTE="공식 상품 목록이 아니라 최근 기사에서 확인한 굿즈예요. 일부만 담겨 있고, 지금도 살 수 있는지는 판매처에서 확인해 주세요.";
+const C=[
+{k:"kirby",name:"커비",ja:"星のカービィ",ini:"커",bg:"--s1",official:1,rail:"요즘 들어온 굿즈",railNote:"11월 15일 공식 사이트 기준",btn:"상품 페이지 보기",
+ sub:"공식 사이트에 올라온 커비 굿즈를 한곳에서 둘러보고, 가진 굿즈는 내 손안의 소품샵에 체크해 보세요.",
+ items:K.map(mk),moreTitle:"공식 사이트에서 더 보기",more:CATS.map(c=>[c[0],c[1],KB+"goods_cat/goods_cat"+c[2]+"/"]),
+ tags:CH.map(c=>[c[0],KB+"goods_tag/"+c[1]+"/",c[2],c[3]]),copy:"© Nintendo / HAL Laboratory, Inc.",tag:"커비굿즈",shops:[
+ {n:"일본 공식 굿즈 (우체국·엔스카이 숍)",t:"일본 현지",d:"2026년 커비 굿즈 컬렉션은 일본 전국 우체국에서 10월 1일부터, 엔스카이 숍에서는 11월 2일부터 판매해요. 한국으로 보내 주는지는 확인하지 못했어요.",u:"https://www.haveagood-holiday.com/ko/articles/kirby-goods-collection-2026-post-offices"},
+ {n:"국내 팝업스토어",t:"기간 한정",d:"2022년에 용산 아이파크몰에서 커비 30주년 팝업이 열려 대기가 길었다는 보도가 있어요. 지금 진행 중인 국내 행사는 확인하지 못했어요.",u:"https://www.wikitree.co.kr/articles/777750"}]},
+{k:"chiikawa",name:"먼작귀",ja:"ちいかわ",ini:"먼",bg:"--s2",rail:"소식으로 만난 굿즈",railNote:"기사 기준",btn:"기사 보기",
+ sub:"치이카와(먼작귀) 굿즈 소식을 모아 두었어요. 가진 굿즈는 내 손안의 소품샵에 체크해 보세요.",note:NOTE,
+ tag:"먼작귀굿즈",shops:[
+ {n:"치이카와샵 (서울 용산 아이파크몰)",t:"공식 상설 매장",d:"2026년 2월에 문을 연 국내 첫 공식 상설 매장이에요. 인기 굿즈는 1인 구매 제한과 품절이 잦고, 예약·웨이팅 운영 방식이 바뀌니 방문 전에 확인하세요.",u:"https://foxcg.com/chiikawa-korea-popup-goods/"},
+ {n:"팝업스토어 일정",t:"기간 한정",d:"10월 27일 기준 진행 중인 한국 팝업은 확인되지 않았어요. 앞서 더현대 서울, 무신사 스토어 성수, 용산 행사는 모두 끝났어요. 새 일정은 팝업 정보 사이트 팝가에서 확인하세요.",u:"https://popga.co.kr/content/magazine/113"},
+ {n:"해외 직구",t:"온라인",d:"국내에서 구하기 힘든 굿즈를 중국 타오바오에서 찾는 사람이 늘었다는 보도가 있어요. 가품 주의사항을 꼭 확인하세요.",u:"https://biz.heraldcorp.com/article/10904039"}],
+ items:CI.map(mk),moreTitle:"더 찾아보기",more:[["네이버 쇼핑에서 찾기","먼작귀 굿즈",N("먼작귀 굿즈")],["네이버 쇼핑에서 찾기","치이카와 굿즈",N("치이카와 굿즈")]]},
+{k:"shinchan",name:"짱구",ja:"クレヨンしんちゃん",ini:"짱",bg:"--s5",rail:"소식으로 만난 굿즈",railNote:"기사 기준",btn:"기사 보기",
+ sub:"짱구 굿즈 소식을 모아 두었어요. 가진 굿즈는 내 손안의 소품샵에 체크해 보세요.",note:NOTE,
+ tag:"짱구굿즈",shops:[
+ {n:"서울 캐릭터 굿즈 팝업 모음 (팝가)",t:"팝업 일정",d:"2026년 8월 기준으로 짱구, 치이카와 등 서울 캐릭터 굿즈 팝업을 정리한 글이에요. 지금 열려 있는지는 팝가에서 확인하세요.",u:"https://popga.co.kr/content/magazine/373"},
+ {n:"크레용 신짱 시네마 퍼레이드",t:"해외 공식 숍",d:"일본 여러 도시와 대만 타이베이에 공식 숍이 있고 온라인 스토어도 있어요. 한국 매장은 확인하지 못했어요.",u:"https://premium.gamepedia.jp/hobby/?p=228174"}],
+ items:SI.map(mk),moreTitle:"공식 사이트에서 더 보기",more:[["짱구 공식 포털","クレヨンしんちゃん公式ポータル","https://www.shinchan-app.jp/"],["만화 짱구 공식","まんがクレヨンしんちゃん.com","https://manga-shinchan.com/"],["영화 공식 사이트","映画クレヨンしんちゃん","https://www.shinchan-movie.com/2025/"],["네이버 쇼핑에서 찾기","짱구 굿즈",N("짱구 굿즈")]]}
+];
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const rd=k=>{try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(e){return []}};
+const put=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const main=$("main");
+const SK="mypage-v1";
+let st={items:{},ach:{}},mine=rd("chars"),cur="전체",only=false,ch=null,view="";
+try{const j=JSON.parse(localStorage.getItem(SK)||"null");if(j&&j.items)st={items:j.items,ach:j.ach||{}}}catch(e){}
+C.forEach(c=>{[...rd("got-"+c.k),...(c.k==="kirby"?rd("kirby-got"):[])].forEach(id=>{const k=c.k+":"+id;if(!st.items[k])st.items[k]={w:"",t:0}});try{localStorage.removeItem("got-"+c.k)}catch(e){}});
+try{localStorage.removeItem("kirby-got")}catch(e){}
+const save=()=>{try{localStorage.setItem(SK,JSON.stringify(st))}catch(e){}};
+const has=(c,g)=>!!st.items[c.k+":"+g.id];
+const count=c=>c.items.filter(g=>has(c,g)).length;
+const total=()=>C.reduce((n,c)=>n+count(c),0);
+const label=k=>mine.includes(k)?"내 캐릭터 ✓":"내 캐릭터에 추가";
+const foot=c=>`<footer>비공식 팬 페이지예요. 한국어 이름은 일본어 원제를 옮긴 것이라 실제와 다를 수 있어요. 각 캐릭터의 저작권은 각 권리자에게 있어요.${c&&c.copy?" "+esc(c.copy):""}</footer>`;
+const placeMap=()=>{const m={};C.forEach(c=>c.items.forEach(g=>{const e=st.items[c.k+":"+g.id],w=e&&(e.w||"").trim();if(w)m[w]=(m[w]||0)+1}));return m};
+const BASEW=["용산 아이파크몰 치이카와샵","공식 온라인 스토어","팝업스토어","개인 소품샵","인스타그램 판매자","해외 직구","중고거래","선물받았어요"];
+function wh(){const ex=Object.keys(placeMap()).filter(x=>!BASEW.includes(x));$("wh").innerHTML=[...BASEW,...ex].map(x=>`<option value="${esc(x)}">`).join("")}
+
+function ACH(){
+  const n=total(),pm=placeMap(),p=Object.keys(pm).length,r=Object.values(pm).reduce((x,y)=>x+y,0),f=C.filter(c=>count(c)>0).length;
+  const l=C.reduce((x,c)=>x+c.items.filter(g=>g.ltd&&has(c,g)).length,0);
+  const cd=C.some(c=>[...new Set(c.items.map(g=>g.cat))].some(t=>{const z=c.items.filter(g=>g.cat===t);return z.length>=2&&z.every(g=>has(c,g))}));
+  const a=[
+    {id:"first",ico:"🌱",t:"첫 걸음",d:"첫 굿즈 모으기",goal:1,cur:n},
+    {id:"n5",ico:"🧺",t:"수집 입문",d:"굿즈 5개 모으기",goal:5,cur:n},
+    {id:"n10",ico:"🎀",t:"수집가",d:"굿즈 10개 모으기",goal:10,cur:n},
+    {id:"n20",ico:"🏆",t:"굿즈 박사",d:"굿즈 20개 모으기",goal:20,cur:n},
+    {id:"multi2",ico:"💞",t:"두 캐릭터 팬",d:"2개 캐릭터 굿즈 모으기",goal:2,cur:f},
+    {id:"multi3",ico:"🌈",t:"올라운드 팬",d:"3개 캐릭터 굿즈 모으기",goal:3,cur:f},
+    {id:"rec3",ico:"📝",t:"기록 습관",d:"구매처 3개 적기",goal:3,cur:r},
+    {id:"shop3",ico:"🧭",t:"발품 탐험가",d:"서로 다른 구매처 3곳 적기",goal:3,cur:p},
+    {id:"ltd3",ico:"✨",t:"한정판 헌터",d:"한정 굿즈 3개 모으기",goal:3,cur:l},
+    {id:"cat",ico:"🧩",t:"카테고리 마스터",d:"한 카테고리를 전부 모으기 (2개 이상)",goal:1,cur:cd?1:0}
+  ];
+  C.forEach(c=>{const k=count(c),t=c.items.length;a.push({id:c.k+"-half",ico:"⭐",t:c.name+" 절반 달성",d:c.name+" 굿즈 절반 모으기",goal:Math.ceil(t/2),cur:k},{id:c.k+"-all",ico:"👑",t:c.name+" 컴플리트",d:c.name+" 굿즈 전부 모으기",goal:t,cur:k})});
+  return a;
+}
+let tt;
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),3800)}
+function sync(announce){
+  const g=[];
+  ACH().forEach(a=>{if(a.cur>=a.goal&&!st.ach[a.id]){st.ach[a.id]=Date.now();g.push(a)}});
+  if(g.length){save();if(announce)toast("🎉 업적 달성! "+g.map(a=>a.ico+" "+a.t).join(", "))}
+}
+const LV=[[0,"새싹 수집가","🌱"],[5,"단골 손님","🛍️"],[10,"소품샵 사장님","🏪"],[20,"굿즈 박사","🏆"]];
+function level(n){let i=0;LV.forEach((l,j)=>{if(n>=l[0])i=j});const x=LV[i+1];return{t:LV[i][1],e:LV[i][2],next:x?x[0]-n:0,pct:x?(n-LV[i][0])/(x[0]-LV[i][0])*100:100}}
+
+function bar(){
+  $("tabs").innerHTML=mine.map(k=>C.find(c=>c.k===k)).filter(Boolean).map(c=>`<a class="tab${c.k===view?" on":""}" href="#${c.k}">${esc(c.name)}</a>`).join("")+`<a class="tab add" href="#home">＋ 캐릭터 고르기</a>`;
+  $("me").className="tab me"+(view==="mypage"?" on":"");
+}
+function picks(){document.querySelectorAll("[data-pick]").forEach(b=>{b.textContent=label(b.dataset.pick);b.setAttribute("aria-pressed",mine.includes(b.dataset.pick))})}
+
+function home(){
+  ch=null;
+  main.innerHTML=`<h1><mark>캐릭터</mark> 굿즈 도감</h1><p class="sub">좋아하는 캐릭터 굿즈를 한곳에서 둘러보는 비공식 팬 사이트예요.</p><section class="panel intro"><h2>이 사이트는 이런 곳이에요</h2><p>캐릭터마다 굿즈 페이지가 있어요. 새로 나온 굿즈를 카테고리별로 둘러보고, 상품 페이지나 기사로 바로 넘어갈 수 있어요.</p><p>굿즈 대부분이 일본 회사 제품이라 한국에서 구하기 어려울 수 있어요. 그래서 한국에서 살 수 있는 곳(공식 매장, 팝업, 온라인)도 함께 정리해요.</p><ul class="how"><li>좋아하는 캐릭터를 골라 두면 위쪽 메뉴에 떠요.</li><li>가진 굿즈는 내 손안의 소품샵에 체크하고, 어디서 샀는지 적어 두세요.</li><li>마이페이지에서 캐릭터별 수집 현황, 구매처, 업적을 확인해요.</li><li>한국 구매처는 확인된 정보만 담고, 출처 링크를 달아 둬요.</li></ul></section><h2 style="margin:0 0 4px">좋아하는 캐릭터를 골라 보세요</h2><p class="sub">고른 캐릭터는 위쪽 메뉴에 떠서 언제든 바로 갈 수 있어요. 선택은 이 기기에만 저장돼요.</p><div class="hgrid">${C.map(c=>`<article class="hc"><div class="av" style="background:var(${c.bg})">${c.ini}</div><h2>${esc(c.name)}</h2><p class="ja" lang="ja">${esc(c.ja)}</p><p class="note">굿즈 ${c.items.length}개 수록</p><div class="acts"><a href="#${c.k}">페이지 보기</a><button data-pick="${c.k}"></button></div></article>`).join("")}</div>${foot()}`;
+  picks();
+}
+
+function page(c){
+  ch=c;cur="전체";only=false;
+  main.innerHTML=`<div class="row" style="justify-content:space-between;align-items:flex-start"><h1><mark>${esc(c.name)}</mark> 굿즈 도감</h1><button class="chip" data-pick="${c.k}"></button></div><p class="sub">${esc(c.sub)}</p>${c.note?`<p class="panel note">${esc(c.note)}</p>`:""}
+<section class="panel"><div class="head"><h2>${esc(c.rail)}</h2><span class="note">${esc(c.railNote)}</span></div><div class="rail">${c.items.slice(0,8).map((g,i)=>`<a class="mini" href="${esc(g.u)}" target="_blank" rel="noopener noreferrer"><div class="t" style="background:var(${SW[i%5]})">${c.official?'<span class="badge">신상</span>':""}${g.ltd?'<span class="badge ltd">한정</span>':""}${g.emo}</div><p>${esc(g.ko)}</p></a>`).join("")}</div></section>
+<section class="panel"><div class="head"><h2>내 손안의 소품샵</h2><span class="note">로그인 없이 이 기기에 저장돼요 · <a href="#mypage">마이페이지 보기</a></span></div><div id="sum"></div><div class="bar" aria-hidden="true"><i id="fill"></i></div><div class="row"><button class="chip" id="onlyGot" aria-pressed="false">내가 모은 것만 보기</button></div></section>
+<section class="panel"><div class="head"><h2>굿즈 둘러보기</h2><span class="note" id="cnt"></span></div><div class="row" id="chips" role="group" aria-label="카테고리"></div><div class="grid" id="grid"></div></section>
+<section class="panel"><div class="head"><h2>한국에서 어디서 살 수 있어요?</h2><span class="note">새 탭에서 열려요</span></div><div class="shops">${c.shops.map(x=>`<a class="shop" href="${esc(x.u)}" target="_blank" rel="noopener noreferrer"><b>${esc(x.n)}</b><span class="tag">${esc(x.t)}</span><p>${esc(x.d)}</p></a>`).join("")}</div><div class="cats"><a href="https://www.instagram.com/explore/tags/${encodeURIComponent(c.tag)}/" target="_blank" rel="noopener noreferrer">인스타그램에서 찾기<small>#${esc(c.tag)}</small></a><a href="${esc(N(c.tag.replace("굿즈"," 굿즈")))}" target="_blank" rel="noopener noreferrer">네이버 쇼핑에서 찾기<small>${esc(c.tag.replace("굿즈"," 굿즈"))}</small></a></div><p class="note" style="margin:12px 0 0">개인 소품샵과 인스타 계정은 확인된 곳만 담아요. 위 검색 링크로 직접 찾아볼 수도 있어요. 재고와 판매 여부는 판매처에서 확인해 주세요.</p></section>
+<section class="panel"><div class="head"><h2>${esc(c.moreTitle)}</h2><span class="note">새 탭에서 열려요</span></div><div class="cats">${c.more.map(m=>`<a href="${esc(m[2])}" target="_blank" rel="noopener noreferrer">${esc(m[0])}<small>${esc(m[1])}</small></a>`).join("")}</div>${c.tags?`<h2 style="margin:20px 0 10px;font-size:1.2rem">캐릭터별로 찾기</h2><div class="chars">${c.tags.map(t=>`<a href="${esc(t[1])}" target="_blank" rel="noopener noreferrer"><b style="background:var(${t[3]})">${t[2]}</b>${esc(t[0])}</a>`).join("")}</div>`:""}</section>${foot(c)}`;
+  picks();chips();stats();grid();wh();
+}
+function chips(){
+  const names=["전체",...new Set(ch.items.map(g=>g.cat))];
+  $("chips").innerHTML=names.map(n=>{const k=n==="전체"?ch.items.length:ch.items.filter(g=>g.cat===n).length;return `<button class="chip" data-c="${esc(n)}" aria-pressed="${n===cur}">${esc(n)}<small>${k}</small></button>`}).join("");
+}
+function stats(){
+  const n=count(ch);
+  $("sum").innerHTML=`모은 굿즈 <b>${n}</b> / ${ch.items.length}`;
+  $("fill").style.width=(n/ch.items.length*100)+"%";
+}
+function grid(){
+  const l=ch.items.filter(g=>(cur==="전체"||g.cat===cur)&&(!only||has(ch,g)));
+  $("cnt").textContent=l.length+"개";
+  $("grid").innerHTML=l.length?l.map(g=>{
+    const i=ch.items.indexOf(g),e=st.items[ch.k+":"+g.id],on=!!e;
+    return `<article class="card${on?" got":""}"><div class="t" style="background:var(${SW[i%5]})">${g.ltd?'<span class="badge ltd">한정</span>':""}${g.emo}</div><div class="b"><span class="cat">${esc(g.cat)}${g.p?" · "+esc(g.p):""}</span><h3 class="ko">${esc(g.ko)}</h3><p class="ja" lang="ja">${esc(g.ja)}</p>${on?`<input class="where" data-w="${esc(g.id)}" list="wh" maxlength="30" value="${esc(e.w||"")}" placeholder="어디서 샀나요?" aria-label="${esc(g.ko)} 구매처">`:""}<div class="acts"><a href="${esc(g.u)}" target="_blank" rel="noopener noreferrer">${esc(ch.btn)}</a><button data-id="${esc(g.id)}" aria-pressed="${on}">${on?"모았어요 ✓":"모았어요 체크"}</button></div></div></article>`;
+  }).join(""):`<p class="empty">${only?"아직 체크한 굿즈가 없어요. 가진 굿즈에서 모았어요 체크를 눌러 보세요.":"이 카테고리에는 굿즈가 없어요."}</p>`;
+}
+
+function mypage(){
+  ch=null;
+  const n=total(),lv=level(n),pm=placeMap(),pk=Object.keys(pm).sort((a,b)=>pm[b]-pm[a]).slice(0,8),mx=pm[pk[0]]||1,fans=C.filter(c=>count(c)>0).length;
+  const all=ACH(),done=all.filter(a=>st.ach[a.id]).sort((a,b)=>st.ach[b.id]-st.ach[a.id]),doing=all.filter(a=>!st.ach[a.id]).sort((a,b)=>b.cur/b.goal-a.cur/a.goal);
+  const recent=Object.entries(st.items).filter(e=>e[1].t).sort((a,b)=>b[1].t-a[1].t).map(e=>{const i=e[0].indexOf(":"),c=C.find(x=>x.k===e[0].slice(0,i)),g=c&&c.items.find(x=>x.id===e[0].slice(i+1));return c&&g?{c,g,w:e[1].w}:null}).filter(Boolean).slice(0,8);
+  const ac=a=>{const ok=!!st.ach[a.id],p=Math.min(100,a.cur/a.goal*100);return `<div class="ach${ok?" on":""}"><span class="ico" aria-hidden="true">${ok?a.ico:"🔒"}</span><div><b>${esc(a.t)}</b><p>${esc(a.d)}</p><div class="bar sm" aria-hidden="true"><i style="width:${p}%"></i></div><small>${Math.min(a.cur,a.goal)} / ${a.goal}${ok?" · 달성":""}</small></div></div>`};
+  const code=btoa(unescape(encodeURIComponent(JSON.stringify(st))));
+  main.innerHTML=`<h1><mark>마이</mark>페이지</h1><p class="sub">내가 모은 굿즈, 산 곳, 달성한 업적을 한눈에 봐요.</p>
+<section class="panel hero"><div class="av big" style="background:var(--s1)" aria-hidden="true">${lv.e}</div><div style="flex:1"><h2>${lv.t}</h2><p style="margin:0">모은 굿즈 <b>${n}</b>개 · 캐릭터 ${fans}종 · 구매처 ${Object.keys(pm).length}곳</p><div class="bar" aria-hidden="true"><i style="width:${lv.pct}%"></i></div><p class="note" style="margin:0">${lv.next?"다음 등급까지 "+lv.next+"개 남았어요":"최고 등급이에요!"}</p></div></section>
+<section class="panel"><div class="head"><h2>캐릭터별 수집 현황</h2><span class="note">이 도감에 실린 굿즈 기준이에요</span></div>${C.map(c=>{const k=count(c),t=c.items.length;return `<div class="rowline"><a href="#${c.k}">${esc(c.name)}</a><div class="bar" aria-hidden="true"><i style="width:${k/t*100}%"></i></div><span>${k} / ${t}</span></div>`}).join("")}</section>
+<section class="panel"><div class="head"><h2>어디서 샀나요?</h2><span class="note">굿즈 카드에서 구매처를 적으면 여기에 모여요</span></div>${pk.length?pk.map(w=>`<div class="rowline"><span>${esc(w)}</span><div class="bar" aria-hidden="true"><i style="width:${pm[w]/mx*100}%"></i></div><span>${pm[w]}개</span></div>`).join(""):`<p class="note">아직 적은 구매처가 없어요. 굿즈 페이지에서 모았어요 체크를 누르고 구매처를 적어 보세요.</p>`}${recent.length?`<h2 style="margin:18px 0 6px;font-size:1.1rem">최근에 모은 굿즈</h2><ul class="how">${recent.map(r=>`<li>${r.g.emo} ${esc(r.g.ko)} · ${esc(r.c.name)} · ${r.w?esc(r.w):"구매처 미입력"}</li>`).join("")}</ul>`:""}</section>
+<section class="panel"><div class="head"><h2>업적·도전과제</h2><span class="note">달성 ${done.length} / ${all.length}</span></div>${doing.length?`<h2 style="margin:0 0 8px;font-size:1.1rem">도전 중</h2><div class="achs">${doing.map(ac).join("")}</div>`:""}${done.length?`<h2 style="margin:0 0 8px;font-size:1.1rem">달성한 업적</h2><div class="achs">${done.map(ac).join("")}</div>`:""}</section>
+<section class="panel"><div class="head"><h2>기록 옮기기</h2><span class="note">로그인 없이 이 기기 브라우저에 저장돼요</span></div><p class="note" style="margin:0 0 10px">기기를 바꾸거나 브라우저 데이터를 지우면 기록이 사라질 수 있어요. 아래 코드를 복사해 두었다가 다른 기기에서 붙여 넣으면 이어서 쓸 수 있어요.</p><textarea id="code" readonly aria-label="내 기록 코드">${code}</textarea><div class="row" style="margin:8px 0 14px"><button class="chip" id="copy">코드 복사</button></div><textarea id="imp" placeholder="다른 기기에서 복사한 코드를 여기에 붙여 넣으세요" aria-label="가져올 코드"></textarea><div class="row" style="margin-top:8px"><button class="chip" id="doimp">가져오기</button></div><p class="note" id="msg" role="status"></p></section>${foot()}`;
+}
+const okKey=k=>/^[a-z]+:\w+$/.test(k)&&C.some(c=>k.indexOf(c.k+":")===0);
+function doImport(){
+  const v=$("imp").value.trim();let msg;
+  try{
+    const j=JSON.parse(decodeURIComponent(escape(atob(v))));
+    if(!j||typeof j.items!=="object")throw 0;
+    let add=0;
+    Object.keys(j.items).forEach(k=>{
+      if(!okKey(k))return;const x=j.items[k]||{},w=String(x.w||"").slice(0,30);
+      if(!st.items[k]){st.items[k]={w,t:+x.t||0};add++}else if(!st.items[k].w&&w)st.items[k].w=w;
+    });
+    Object.keys(j.ach||{}).forEach(k=>{if(!st.ach[k]&&+j.ach[k])st.ach[k]=+j.ach[k]});
+    save();sync(false);msg="가져왔어요. 새로 "+add+"개가 합쳐졌어요.";
+  }catch(e){msg="코드를 읽지 못했어요. 복사한 코드 전체를 붙여 넣었는지 확인해 주세요."}
+  mypage();$("msg").textContent=msg;
+}
+main.addEventListener("click",e=>{
+  let b=e.target.closest("[data-pick]");
+  if(b){const k=b.dataset.pick;mine=mine.includes(k)?mine.filter(x=>x!==k):[...mine,k];put("chars",mine);bar();picks();return}
+  b=e.target.closest(".chip[data-c]");if(b){cur=b.dataset.c;chips();grid();return}
+  b=e.target.closest("#onlyGot");if(b){only=!only;b.setAttribute("aria-pressed",only);grid();return}
+  b=e.target.closest("#copy");
+  if(b){const t=$("code");t.select();const d=()=>{$("msg").textContent="복사했어요. 메모장 등에 붙여 넣어 보관하세요."};(navigator.clipboard?navigator.clipboard.writeText(t.value):Promise.reject()).then(d,()=>{try{document.execCommand("copy")&&d()}catch(x){}});return}
+  b=e.target.closest("#doimp");if(b){doImport();return}
+  b=e.target.closest("button[data-id]");
+  if(b){const k=ch.k+":"+b.dataset.id;if(st.items[k])delete st.items[k];else st.items[k]={w:"",t:Date.now()};save();stats();grid();wh();sync(true)}
+});
+main.addEventListener("change",e=>{
+  const i=e.target.closest(".where");if(!i||!ch)return;
+  const k=ch.k+":"+i.dataset.w;
+  if(st.items[k]){st.items[k].w=i.value.trim().slice(0,30);save();wh();sync(true)}
+});
+function route(){
+  const h=location.hash.slice(1),c=C.find(x=>x.k===h);
+  view=c?c.k:h==="mypage"?"mypage":"";
+  c?page(c):h==="mypage"?mypage():home();
+  bar();window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+sync(false);save();wh();
+route();
+</script>
+</body>
+</html>
